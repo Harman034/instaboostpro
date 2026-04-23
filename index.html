@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>InstaBoost Pro | Dashboard</title>
+  <style>
+    :root{
+      --bg:#050816;
+      --bg2:#0b1224;
+      --card:rgba(9,16,34,0.88);
+      --line:rgba(0,255,170,0.18);
+      --cyan:#00eaff;
+      --green:#00ff9d;
+      --pink:#ff2bd6;
+      --yellow:#ffd84d;
+      --text:#f5f7fb;
+      --muted:#9fb0c7;
+      --red:#ff5c7a;
+    }
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+    }
+
+    html{
+      scroll-behavior:smooth;
+    }
+
+    body{
+      font-family: Arial, Helvetica, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(0,234,255,0.08), transparent 25%),
+        radial-gradient(circle at top right, rgba(255,43,214,0.07), transparent 28%),
+        linear-gradient(135deg, #040714, #091120 40%, #0d1730);
+      overflow-x:hidden;
+    }
+
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size:30px 30px;
+      mask-image:linear-gradient(to bottom, rgba(0,0,0,.6), transparent);
+    }
+
+    a{
+      text-decoration:none;
+      color:inherit;
+    }
+
+    .container{
+      width:92%;
+      max-width:1250px;
+      margin:auto;
+    }
+
+    .topbar{
+      position:sticky;
+      top:0;
+      z-index:999;
+      backdrop-filter:blur(14px);
+      background:rgba(5,8,22,0.80);
+      border-bottom:1px solid rgba(0,234,255,0.12);
+    }
+
+    .nav{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:20px;
+      padding:16px 0;
+      flex-wrap:wrap;
+    }
+
+    .logo{
+      font-size:1.45rem;
+      font-weight:800;
+      color:var(--green);
+      letter-spacing:1px;
+      text-shadow:0 0 12px rgba(0,255,157,.4);
+    }
+
+    .nav-links{
+      display:flex;
+      gap:16px;
+      flex-wrap:wrap;
+      color:var(--muted);
+      font-size:.95rem;
+    }
+
+    .nav-links a:hover{
+      color:var(--cyan);
+    }
+
+    .hero{
+      padding:70px 0 35px;
+    }
+
+    .hero-grid{
+      display:grid;
+      grid-template-columns:1.3fr .7fr;
+      gap:22px;
+    }
+
+    .box{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:22px;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.02) inset,
+        0 0 22px rgba(0,234,255,0.05),
+        0 0 30px rgba(255,43,214,0.03);
+      backdrop-filter:blur(10px);
+    }
+
+    .hero-main{
+      padding:34px 28px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .hero-main::after{
+      content:"";
+      position:absolute;
+      width:240px;
+      height:240px;
+      right:-80px;
+      top:-80px;
+      border-radius:50%;
+      background:radial-gradient(circle, rgba(0,234,255,.14), transparent 60%);
+      filter:blur(8px);
+    }
+
+    .badge{
+      display:inline-block;
+      padding:8px 14px;
+      border-radius:999px;
+      border:1px solid rgba(0,255,157,.35);
+      color:var(--green);
+      font-size:12px;
+      font-weight:700;
+      letter-spacing:.8px;
+      text-transform:uppercase;
+      margin-bottom:16px;
+    }
+
+    h1{
+      font-size:3rem;
+      line-height:1.08;
+      margin-bottom:14px;
+      color:#fff;
+    }
+
+    .accent{
+      color:var(--cyan);
+      text-shadow:0 0 12px rgba(0,234,255,.25);
+    }
+
+    .hero-main p{
+      color:var(--muted);
+      font-size:1rem;
+      max-width:760px;
+      margin-bottom:24px;
+    }
+
+    .hero-buttons{
+      display:flex;
+      flex-wrap:wrap;
+      gap:14px;
+    }
+
+    .btn{
+      display:inline-block;
+      padding:14px 22px;
+      border-radius:12px;
+      font-weight:800;
+      transition:.25s ease;
+    }
+
+    .btn-primary{
+      background:linear-gradient(90deg,var(--green),var(--cyan));
+      color:#04111b;
+      box-shadow:0 0 20px rgba(0,255,157,.18);
+    }
+
+    .btn-primary:hover{
+      transform:translateY(-2px);
+    }
+
+    .btn-secondary{
+      border:1px solid rgba(0,234,255,.35);
+      color:var(--cyan);
+      background:rgba(0,234,255,.04);
+    }
+
+    .btn-secondary:hover{
+      transform:translateY(-2px);
+    }
+
+    .side-panel{
+      padding:18px;
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+    }
+
+    .panel-title{
+      color:var(--green);
+      font-size:.9rem;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:.7px;
+      margin-bottom:8px;
+    }
+
+    .stats{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+    }
+
+    .stat{
+      background:rgba(255,255,255,0.02);
+      border:1px solid rgba(255,255,255,0.06);
+      border-radius:16px;
+      padding:14px;
+    }
+
+    .stat h3{
+      font-size:1.3rem;
+      color:#fff;
+      margin-bottom:4px;
+    }
+
+    .stat p{
+      color:var(--muted);
+      font-size:.88rem;
+    }
+
+    .terminal{
+      background:linear-gradient(180deg, rgba(0,0,0,.35), rgba(5,10,20,.85));
+      border-radius:18px;
+      border:1px solid rgba(0,255,157,.14);
+      padding:16px;
+    }
+
+    .terminal-head{
+      display:flex;
+      gap:8px;
+      margin-bottom:10px;
+    }
+
+    .dot{
+      width:10px;
+      height:10px;
+      border-radius:50%;
+    }
+
+    .red{background:#ff5f56;}
+    .yellow{background:#ffbd2e;}
+    .green{background:#27c93f;}
+
+    .terminal pre{
+      font-family:Consolas, monospace;
+      color:#87ffc5;
+      font-size:.9rem;
+      white-space:pre-wrap;
+    }
+
+    section{
+      padding:32px 0 70px;
+    }
+
+    .section-title{
+      font-size:1.9rem;
+      color:var(--cyan);
+      margin-bottom:10px;
+      text-align:center;
+    }
+
+    .section-sub{
+      max-width:820px;
+      margin:0 auto 30px;
+      text-align:center;
+      color:var(--muted);
+    }
+
+    .dashboard-cards{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+      gap:16px;
+      margin-bottom:24px;
+    }
+
+    .dash-card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:18px;
+    }
+
+    .dash-card .small{
+      color:var(--muted);
+      font-size:.86rem;
+      margin-bottom:6px;
+    }
+
+    .dash-card .big{
+      font-size:1.45rem;
+      font-weight:800;
+      color:#fff;
+    }
+
+    .dash-card .tagline{
+      color:var(--green);
+      font-size:.85rem;
+      margin-top:6px;
+    }
+
+    .service-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+      gap:20px;
+    }
+
+    .service-box{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:20px;
+      overflow:hidden;
+      position:relative;
+    }
+
+    .service-box::before{
+      content:"";
+      position:absolute;
+      top:0;
+      left:0;
+      right:0;
+      height:3px;
+      background:linear-gradient(90deg,var(--green),var(--cyan),var(--pink));
+    }
+
+    .service-head{
+      padding:18px 20px 12px;
+      border-bottom:1px solid rgba(255,255,255,0.06);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+
+    .service-head h3{
+      font-size:1.08rem;
+      color:#fff;
+    }
+
+    .pill{
+      font-size:11px;
+      font-weight:800;
+      padding:5px 10px;
+      border-radius:999px;
+    }
+
+    .pill-green{
+      color:var(--green);
+      background:rgba(0,255,157,.10);
+    }
+
+    .pill-yellow{
+      color:var(--yellow);
+      background:rgba(255,216,77,.10);
+    }
+
+    .service-body{
+      padding:14px 20px 18px;
+    }
+
+    .line{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      padding:10px 0;
+      border-bottom:1px solid rgba(255,255,255,0.06);
+      color:#e7f2ff;
+      font-size:.94rem;
+    }
+
+    .line:last-child{
+      border-bottom:none;
+    }
+
+    .line span:last-child{
+      color:var(--cyan);
+      font-weight:700;
+      white-space:nowrap;
+    }
+
+    .question-wrap{
+      max-width:900px;
+      margin:auto;
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:22px;
+      padding:26px;
+    }
+
+    .question-wrap p{
+      color:var(--muted);
+      margin-bottom:16px;
+      text-align:center;
+    }
+
+    .question-form{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:14px;
+    }
+
+    .question-form .full{
+      grid-column:1 / -1;
+    }
+
+    input, textarea{
+      width:100%;
+      background:rgba(255,255,255,0.03);
+      border:1px solid rgba(255,255,255,0.08);
+      color:#fff;
+      padding:14px 14px;
+      border-radius:12px;
+      outline:none;
+      font-size:.95rem;
+    }
+
+    textarea{
+      min-height:130px;
+      resize:vertical;
+    }
+
+    input:focus, textarea:focus{
+      border-color:rgba(0,234,255,.35);
+      box-shadow:0 0 0 3px rgba(0,234,255,.08);
+    }
+
+    .question-buttons{
+      display:flex;
+      justify-content:center;
+      gap:14px;
+      flex-wrap:wrap;
+      margin-top:16px;
+    }
+
+    .contact-box{
+      text-align:center;
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:22px;
+      padding:32px 20px;
+    }
+
+    .contact-box h2{
+      font-size:1.9rem;
+      margin-bottom:10px;
+      color:#fff;
+    }
+
+    .contact-box p{
+      color:var(--muted);
+      max-width:760px;
+      margin:0 auto 20px;
+    }
+
+    .admin-email{
+      margin-top:14px;
+      font-size:1rem;
+      color:var(--cyan);
+      font-weight:700;
+      word-break:break-word;
+    }
+
+    .footer{
+      padding:28px 14px 40px;
+      border-top:1px solid rgba(255,255,255,0.08);
+      text-align:center;
+      color:#91a4bf;
+      font-size:.92rem;
+    }
+
+    @media (max-width:980px){
+      .hero-grid{
+        grid-template-columns:1fr;
+      }
+    }
+
+    @media (max-width:768px){
+      h1{
+        font-size:2.2rem;
+      }
+
+      .question-form{
+        grid-template-columns:1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="container nav">
+      <div class="logo">INSTABOOST PRO</div>
+      <div class="nav-links">
+        <a href="#dashboard">Dashboard</a>
+        <a href="#services">Plans</a>
+        <a href="#question">Ask</a>
+        <a href="#contact">Contact</a>
+      </div>
+    </div>
+  </div>
+
+  <section class="hero">
+    <div class="container hero-grid">
+      <div class="box hero-main">
+        <div class="badge">SMM dashboard style</div>
+        <h1>Elite <span class="accent">panel dashboard</span> landing page</h1>
+        <p>
+          Dark neon dashboard layout with coded plans, Telegram ordering, live panel feel, and a public question section.
+        </p>
+        <div class="hero-buttons">
+          <a href="https://t.me/InstaBoostTrusted" target="_blank" class="btn btn-primary">Open Channel</a>
+          <a href="https://t.me/InstaBoostproo" target="_blank" class="btn btn-secondary">DM Now</a>
+        </div>
+      </div>
+
+      <div class="box side-panel">
+        <div>
+          <div class="panel-title">System status</div>
+          <div class="stats">
+            <div class="stat">
+              <h3>Online</h3>
+              <p>Panel status</p>
+            </div>
+            <div class="stat">
+              <h3>Fast</h3>
+              <p>Reply speed</p>
+            </div>
+            <div class="stat">
+              <h3>Live</h3>
+              <p>Channel updates</p>
+            </div>
+            <div class="stat">
+              <h3>24/7</h3>
+              <p>Access mode</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="terminal">
+          <div class="terminal-head">
+            <span class="dot red"></span>
+            <span class="dot yellow"></span>
+            <span class="dot green"></span>
+          </div>
+<pre>> dashboard_mode = active
+> support_channel = @InstaBoostTrusted
+> order_contact = @InstaBoostproo
+> coded_plans = active
+> order_mode = telegram_dm
+> panel_status = online</pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="dashboard">
+    <div class="container">
+      <h2 class="section-title">Dashboard Overview</h2>
+      <p class="section-sub">Elite service panel with direct Telegram ordering and live support.</p>
+
+      <div class="dashboard-cards">
+        <div class="dash-card">
+          <div class="small">Service Types</div>
+          <div class="big">Followers</div>
+          <div class="tagline">Likes • Views • Comments</div>
+        </div>
+
+        <div class="dash-card">
+          <div class="small">Order Method</div>
+          <div class="big">Direct DM</div>
+          <div class="tagline">Fast Telegram ordering</div>
+        </div>
+
+        <div class="dash-card">
+          <div class="small">Plan System</div>
+          <div class="big">Coded</div>
+          <div class="tagline">F-01 • L-02 • V-03</div>
+        </div>
+
+        <div class="dash-card">
+          <div class="small">Support</div>
+          <div class="big">24/7</div>
+          <div class="tagline">Quick reply handling</div>
+        </div>
+
+        <div class="dash-card">
+          <div class="small">Updates</div>
+          <div class="big">Channel</div>
+          <div class="tagline">Plans and latest info</div>
+        </div>
+
+        <div class="dash-card">
+          <div class="small">Panel Status</div>
+          <div class="big">Online</div>
+          <div class="tagline">Orders open now</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="services">
+    <div class="container">
+      <h2 class="section-title">Panel Plans</h2>
+      <p class="section-sub">Edit these boxes with your own final package names and pricing.</p>
+
+      <div class="service-grid">
+        <div class="service-box">
+          <div class="service-head">
+            <h3>Starter Panel</h3>
+            <span class="pill pill-yellow">Budget</span>
+          </div>
+          <div class="service-body">
+            <div class="line"><span>S-01 → Basic setup</span><span>₹---</span></div>
+            <div class="line"><span>S-02 → Entry package</span><span>₹---</span></div>
+            <div class="line"><span>S-03 → Small support</span><span>₹---</span></div>
+            <div class="line"><span>S-04 → Launch plan</span><span>₹---</span></div>
+          </div>
+        </div>
+
+        <div class="service-box">
+          <div class="service-head">
+            <h3>Growth Panel</h3>
+            <span class="pill pill-green">Premium</span>
+          </div>
+          <div class="service-body">
+            <div class="line"><span>G-01 → Growth setup</span><span>₹---</span></div>
+            <div class="line"><span>G-02 → Better stability</span><span>₹---</span></div>
+            <div class="line"><span>G-03 → Creator package</span><span>₹---</span></div>
+            <div class="line"><span>G-04 → Full support</span><span>₹---</span></div>
+          </div>
+        </div>
+
+        <div class="service-box">
+          <div class="service-head">
+            <h3>Elite Panel</h3>
+            <span class="pill pill-green">Top Tier</span>
+          </div>
+          <div class="service-body">
+            <div class="line"><span>E-01 → Elite support</span><span>₹---</span></div>
+            <div class="line"><span>E-02 → Priority handling</span><span>₹---</span></div>
+            <div class="line"><span>E-03 → Advanced package</span><span>₹---</span></div>
+            <div class="line"><span>E-04 → Monthly deal</span><span>₹---</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="question">
+    <div class="container">
+      <h2 class="section-title">Ask a Question</h2>
+      <div class="question-wrap">
+        <p>Visitors can write their question here. For real submissions, connect this section to Google Forms or replace the button with your Telegram link.</p>
+
+        <form class="question-form">
+          <div>
+            <input type="text" placeholder="Your Name">
+          </div>
+          <div>
+            <input type="text" placeholder="@username or contact">
+          </div>
+          <div class="full">
+            <input type="text" placeholder="Subject">
+          </div>
+          <div class="full">
+            <textarea placeholder="Write your question here..."></textarea>
+          </div>
+        </form>
+
+        <div class="question-buttons">
+          <a href="https://t.me/InstaBoostproo" target="_blank" class="btn btn-primary">Ask on Telegram</a>
+          <a href="mailto:officialharmanpreet855@gmail.com" class="btn btn-secondary">Email Admin</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="container">
+      <div class="contact-box">
+        <h2>Contact & Orders</h2>
+        <p>
+          Use the channel for updates and information. Use direct message or admin email for questions, custom requests, and support.
+        </p>
+        <div class="hero-buttons" style="justify-content:center;">
+          <a href="https://t.me/InstaBoostTrusted" target="_blank" class="btn btn-primary">Open Channel</a>
+          <a href="https://t.me/InstaBoostproo" target="_blank" class="btn btn-secondary">Message on Telegram</a>
+        </div>
+        <div class="admin-email">
+          Admin Email: <a href="mailto:officialharmanpreet855@gmail.com">officialharmanpreet855@gmail.com</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="footer">
+    © 2026 InstaBoost Pro • Neon SMM Dashboard Template
+  </div>
+
+</body>
+</html>
